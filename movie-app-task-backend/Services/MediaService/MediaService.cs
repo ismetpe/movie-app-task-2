@@ -25,40 +25,47 @@ namespace movie_app_task_backend.Services.MediaService
         }
         public async Task<List<GetMediaDto>> Get10Movies(bool isSeries)
         {
-                       var result = new List<GetMediaDto>();
-
-            var allMoviesdto=( (await _context.Medias
+            var allSeriesdto= await _context.Medias
             .Include(x => x.Ratings)
             .AsSplitQuery()
             .Include(x => x.Actors)
             .AsSplitQuery()
             .Where(x => x.isSeries == isSeries)
             .Take(10)
-            .ToListAsync())
-            .Select(x => _mapper.Map<GetMediaDto>(x))
+            .Select(x => _mapper.Map<GetMediaDto>(x)).ToListAsync();
+
+
+            /*.Select(x => _mapper.Map<GetMediaDto>(x))
             .ToList())
             .OrderByDescending(x => x.Ratings.Select(x => x.Rating_value).Average()).ToList();
-            result = allMoviesdto;
-            return result;
+            result = allSeriesdto;
+            return result;*/
+
+            return allSeriesdto;
         }
 
         public async Task<List<GetMediaDto>> Get10Series(bool isSeries)
         {
           var result = new List<GetMediaDto>();
 
-            var allSeriesdto=( (await _context.Medias
+
+            var allSeriesdto= await _context.Medias
             .Include(x => x.Ratings)
             .AsSplitQuery()
             .Include(x => x.Actors)
             .AsSplitQuery()
             .Where(x => x.isSeries == isSeries)
             .Take(10)
-            .ToListAsync())
-            .Select(x => _mapper.Map<GetMediaDto>(x))
+            .Select(x => _mapper.Map<GetMediaDto>(x)).ToListAsync();
+
+
+            /*.Select(x => _mapper.Map<GetMediaDto>(x))
             .ToList())
             .OrderByDescending(x => x.Ratings.Select(x => x.Rating_value).Average()).ToList();
             result = allSeriesdto;
-            return result;
+            return result;*/
+
+            return allSeriesdto;
         }
 
         public async Task<List<GetMediaDto>> GetAllMovies(bool isSeries)

@@ -12,6 +12,6 @@ namespace movie_app_task_backend.Models
         public bool isSeries { get; set;}
         public List<Rating> Ratings { get; set; } = new List<Rating>();
         public List<Actor> Actors { get; set;} = new List<Actor>();
-
+        public List<Screening> Screenings { get; set;} = new List<Screening>();
     }
 }
