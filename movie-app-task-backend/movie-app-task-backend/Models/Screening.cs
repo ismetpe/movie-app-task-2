@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace movie_app_task_backend.Models
@@ -6,7 +7,7 @@ namespace movie_app_task_backend.Models
     {
         public int Id { get; set; }
 
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
 
         public string Time { get; set; }
 
