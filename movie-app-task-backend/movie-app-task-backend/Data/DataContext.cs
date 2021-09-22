@@ -17,13 +17,13 @@ namespace movie_app_task_backend.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Screening> Screenings { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
-
-        
-
+        public DbSet<MostRatedMoviesReport> MostRatedMoviesReports { get; set; }
+        public DbSet<MostScreenedMoviesReport> MoviesWithMostScreeningsReports { get; set; }
+        public DbSet<MovieWithMostSoldTicketsReport> MoviesWithMostSoldTicketsReports { get; set; }
+        public object MostScreenedMoviesReports { get; internal set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-           
+        {  
             modelBuilder.Entity<Media>().HasData(
 
               new Media
@@ -1364,9 +1364,9 @@ namespace movie_app_task_backend.Data
             
             );
             modelBuilder.Entity<Screening>().HasData(
-                    new Screening { Id = 1, Date = System.DateTime.Now.AddDays(100), MediaId=1, Number_of_seats = 100,Number_of_tickets=100, Place="Sarajevo",Time="10:00" },
-                    new Screening { Id = 2, Date = System.DateTime.Now.AddDays(100), MediaId = 1, Number_of_seats = 100, Number_of_tickets = 100, Place = "Sarajevo", Time = "11:00" },
-                    new Screening { Id = 3, Date = System.DateTime.Now.AddDays(100), MediaId = 1, Number_of_seats = 100, Number_of_tickets = 100, Place = "Sarajevo", Time = "08:00" },
+                    new Screening { Id = 1, Date = System.DateTime.Now.AddDays(100).AddHours(100).AddMinutes(100), MediaId=1, Number_of_seats = 100,Number_of_tickets=100, Place="Sarajevo",Time="10:00" },
+                    new Screening { Id = 2, Date = System.DateTime.Now.AddDays(10), MediaId = 1, Number_of_seats = 100, Number_of_tickets = 100, Place = "Sarajevo", Time = "11:00" },
+                    new Screening { Id = 3, Date = System.DateTime.Now.AddDays(8), MediaId = 1, Number_of_seats = 100, Number_of_tickets = 100, Place = "Sarajevo", Time = "08:00" },
                     new Screening { Id = 4, Date = System.DateTime.Now.AddDays(100), MediaId = 1, Number_of_seats = 100, Number_of_tickets = 100, Place = "Sarajevo", Time = "09:00" },
                     new Screening { Id = 5, Date = System.DateTime.Now.AddDays(100), MediaId = 1, Number_of_seats = 100, Number_of_tickets = 100, Place = "Sarajevo", Time = "10:00" },
                     new Screening { Id = 6, Date = System.DateTime.Now.AddDays(100), MediaId = 1, Number_of_seats = 100, Number_of_tickets = 100, Place = "Sarajevo", Time = "00:00" },
@@ -1464,6 +1464,64 @@ namespace movie_app_task_backend.Data
                     new Ticket { Id = 9, Price = 5.5F, ScreeningId = 60 },
                     new Ticket { Id = 10, Price = 5.5F, ScreeningId = 65}
                 );
+
+
+
+            /*            string GetMoviesWithMostSoldTicketsWithoutRating = @" CREATE PROCEDURE GetMoviesWithMostSoldTicketsWithoutRating
+                                                             AS
+                                                             BEGIN
+                                                             SET NOCOUNT ON
+
+                                                             SELECT  m.Id, m.Title, s.Id AS Screening,COUNT(t.Id) AS Sold_tickets
+                                                             FROM Medias m
+                                                             JOIN Screenings s ON s.MediaId = m.Id
+                                                             JOIN Tickets t ON t.ScreeningId = s.Id
+                                                             WHERE (    SELECT COUNT(*) 
+                                                                        FROM Ratings r 
+                                                                        WHERE r.MediaId = m.Id ) = 0
+                                                             AND isSeries = 0
+                                                             GROUP BY m.Id,m.Title,s.Id
+                                                             ORDER BY Count(t.Id) DESC;
+
+                                                             END";
+
+            string GetTopTenMoviesWithMostRating = @"CREATE PROCEDURE GetTopTenMoviesWithMostRating
+                                             AS
+                                             BEGIN
+                                             SET NOCOUNT ON
+
+                                             SELECT TOP 10  m.Id, m.Title, Count(r.MediaId) as NumberOfRatings, avg(r.rating_value) AS Movie_rating 
+                                             FROM Medias m 
+                                             JOIN Ratings r On r.MediaId = m.Id
+                                             WHERE isSeries = 0 
+                                             GROUP BY m.Id, Title
+                                             ORDER BY avg(r.rating_value) DESC;
+
+                                             END";
+
+
+
+
+            string GetTopTenMoviesWithMostScreening = @"CREATE PROCEDURE GetTopTenMoviesWithMostScreening
+                                             @start_date DateTime,@end_date DateTime
+                                             AS
+                                             BEGIN
+                                             SET NOCOUNT ON
+
+                                             SELECT TOP 10  m.Id, m.Title, Count(s.Id) as NumberOfScreenings
+                                             FROM Medias m 
+                                             JOIN Screenings s On s.MediaId = m.Id
+                                             WHERE s.Date BETWEEN @start_date AND @end_date AND isSeries = 0
+                                             GROUP BY m.Id, Title
+                                             ORDER BY Count(s.Id) DESC;
+
+                                              END";
+            migrationBuilder.Sql(GetMoviesWithMostSoldTicketsWithoutRating);
+            migrationBuilder.Sql(GetTopTenMoviesWithMostRating);
+            migrationBuilder.Sql(GetTopTenMoviesWithMostScreening);*/
+            modelBuilder.Entity<MostRatedMoviesReport>().HasNoKey();
+            modelBuilder.Entity<MostScreenedMoviesReport>().HasNoKey();
+            modelBuilder.Entity<MovieWithMostSoldTicketsReport>().HasNoKey();
         }
     }
 }

@@ -18,6 +18,7 @@ using Microsoft.OpenApi.Models;
 using movie_app_task_backend.Data;
 using movie_app_task_backend.Services.MediaService;
 using movie_app_task_backend.Services.RatingService;
+using movie_app_task_backend.Services.ReportService;
 using movie_app_task_backend.Services.UserService;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -53,14 +54,16 @@ namespace movie_app_task_backend
             });
             services.AddScoped<IMediaService, MediaService>();
             services.AddScoped<IRatingService, RatingService>();
+            services.AddScoped<IReportService, ReportService>();
             services.AddAutoMapper(typeof(Startup));
-            services.AddScoped<IAuthService, AuthService>();services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(_configuration.GetSection("AppSettings:Token").Value)),
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
