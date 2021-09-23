@@ -12,10 +12,14 @@ namespace movie_app_task_backend.Services.RatingService
         private readonly DataContext _context;
         private IHttpContextAccessor _httpContextAccessor;
 
-        public RatingService(DataContext context, IHttpContextAccessor httpContextAccessor)
+        public RatingService()
+        {
+        }
+
+        public RatingService(DataContext context)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
+     
         }
         public async Task<bool> AddRating(float rating, int MediaId)
         {
