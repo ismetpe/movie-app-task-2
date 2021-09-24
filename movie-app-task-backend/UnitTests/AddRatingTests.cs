@@ -1,5 +1,4 @@
-
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using movie_app_task_backend.AutoMapper;
 using movie_app_task_backend.Data;
@@ -7,22 +6,26 @@ using movie_app_task_backend.Models;
 using movie_app_task_backend.Services.MediaService;
 using movie_app_task_backend.Services.RatingService;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace UnitTests
 {
     [TestFixture]
-    public class Tests
+    public class AddRatingTest
     {
         DataContext _context;
         MediaService _mediaService;
+        RatingService _ratingService;
         private IMapper _mapper;
         [SetUp]
         public async Task Setup()
         {
             var options = new DbContextOptionsBuilder<DataContext>()
-             .UseInMemoryDatabase(databaseName: "moviedb1")     
+             .UseInMemoryDatabase(databaseName: "moviedb1")
              .Options;
             _context = new DataContext(options);
 
@@ -79,8 +82,8 @@ namespace UnitTests
                                   isSeries = false,
 
                               });
-           _context.Medias.Add(
-                             new Media
+            _context.Medias.Add(
+                              new Media
                               {
                                   Id = 5,
                                   Title = "Brooklyn Nine-Nine",
@@ -98,14 +101,12 @@ namespace UnitTests
             _context.Ratings.Add(new Rating { Id = 3, Rating_value = 4.0F, MediaId = 1 });
             _context.Ratings.Add(new Rating { Id = 4, Rating_value = 4.2F, MediaId = 1 });
 
-            _context.Ratings.Add(new Rating { Id = 5, Rating_value = 4.6F, MediaId = 2 });
-            _context.Ratings.Add(new Rating { Id = 6, Rating_value = 4.5F, MediaId = 2 });
-            _context.Ratings.Add(new Rating { Id = 7, Rating_value = 4.0F, MediaId = 2 });
-            _context.Ratings.Add(new Rating { Id = 8, Rating_value = 4.2F, MediaId = 2 });
+        
 
             _context.Ratings.Add(new Rating { Id = 9, Rating_value = 3.0F, MediaId = 3 });
             await _context.SaveChangesAsync();
-            _mediaService = new MediaService(_mapper,_context);
+            _mediaService = new MediaService(_mapper, _context);
+            _ratingService = new RatingService(_context);
         }
 
         [TearDown]
@@ -113,31 +114,32 @@ namespace UnitTests
         {
             await _context.Database.EnsureDeletedAsync();
         }
+
+
         [Test]
-        public async Task Movie_Valid_Rating_Test()
-        {
-            var data = await _mediaService.GetAllMovies(false);
-            var movie = data.Find(x => x.Id == 1);
-            Assert.AreEqual(4.3F, movie.Ratings.Select(x => x.Rating_value).Average(), 0.1); 
-        }
-        [Test]
-        public async Task Movie_Zero_Rating_Test()
-        {
-            var data = await _mediaService.GetAllMovies(false);
-            var movie = data.Find(x => x.Id == 4);
-            float rating = 0;
-            if (movie.Ratings.Select(x => x.Rating_value).Any())
-            {
-                rating = movie.Ratings.Select(x => x.Rating_value).Average();
-            }
-            Assert.AreEqual(0, rating);
-        }
-        [Test]
-        public async Task Movie_Valid_Rating_Test2()
+        public async Task Add_Rating1()
         {
             var data = await _mediaService.GetAllMovies(false);
             var movie = data.Find(x => x.Id == 3);
-            Assert.IsTrue(movie.Ratings.Select(x => x.Rating_value).Average() >= 0 && movie.Ratings.Select(x => x.Rating_value).Average() <= 5);
+            var result = await _ratingService.AddRating(4.0F, movie.Id);
+
+            Assert.AreEqual(10,result);
+        }
+
+
+
+        [Test]
+        public async Task Add_Rating2()
+        {
+       
+            await _ratingService.AddRating(4.0F, 4);
+            await _ratingService.AddRating(5.0F, 4);
+            await _ratingService.AddRating(3.0F, 4);
+            await _ratingService.AddRating(2.0F, 4);
+         var data = await _mediaService.GetAllMovies(false);
+         var movie = data.Find(x => x.Id == 4);
+
+            Assert.AreEqual(3.5F, movie.Ratings.Select(x => x.Rating_value).Average(),0.1);
         }
     }
 }

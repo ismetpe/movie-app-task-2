@@ -5,6 +5,6 @@ namespace movie_app_task_backend.Services.RatingService
 {
     public interface IRatingService
     {
-        Task<bool> AddRating(float rating, int MediaId);
+        Task<int> AddRating(float rating, int MediaId);
     }
 }

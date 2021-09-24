@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using movie_app_task_backend.Data;
@@ -21,10 +22,10 @@ namespace movie_app_task_backend.Services.RatingService
             _context = context;
      
         }
-        public async Task<bool> AddRating(float rating, int MediaId)
+        public async Task<int> AddRating(float rating, int MediaId)
         {
 
-            var result = false;
+           
 
 
              var addRating = new Rating
@@ -38,7 +39,7 @@ namespace movie_app_task_backend.Services.RatingService
                  await _context.SaveChangesAsync();
 
 
-            result = true;
+            int result =  _context.Ratings.Max(x => x.Id);
 
             return result;
         }

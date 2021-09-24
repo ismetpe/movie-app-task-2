@@ -1,4 +1,4 @@
-
+﻿
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using movie_app_task_backend.AutoMapper;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace UnitTests
 {
     [TestFixture]
-    public class Tests
+    public class SearchTest
     {
         DataContext _context;
         MediaService _mediaService;
@@ -22,7 +22,7 @@ namespace UnitTests
         public async Task Setup()
         {
             var options = new DbContextOptionsBuilder<DataContext>()
-             .UseInMemoryDatabase(databaseName: "moviedb1")     
+             .UseInMemoryDatabase(databaseName: "moviedb1")
              .Options;
             _context = new DataContext(options);
 
@@ -79,8 +79,8 @@ namespace UnitTests
                                   isSeries = false,
 
                               });
-           _context.Medias.Add(
-                             new Media
+            _context.Medias.Add(
+                              new Media
                               {
                                   Id = 5,
                                   Title = "Brooklyn Nine-Nine",
@@ -105,7 +105,7 @@ namespace UnitTests
 
             _context.Ratings.Add(new Rating { Id = 9, Rating_value = 3.0F, MediaId = 3 });
             await _context.SaveChangesAsync();
-            _mediaService = new MediaService(_mapper,_context);
+            _mediaService = new MediaService(_mapper, _context);
         }
 
         [TearDown]
@@ -114,30 +114,54 @@ namespace UnitTests
             await _context.Database.EnsureDeletedAsync();
         }
         [Test]
-        public async Task Movie_Valid_Rating_Test()
+        public async Task Search_Movie_By_Title_Test()
         {
-            var data = await _mediaService.GetAllMovies(false);
-            var movie = data.Find(x => x.Id == 1);
-            Assert.AreEqual(4.3F, movie.Ratings.Select(x => x.Rating_value).Average(), 0.1); 
+            var data = await _mediaService.GetAllMedia();
+
+            var result = await _mediaService.Search("Star Wars");
+
+            Assert.AreEqual(2, result.Count());
+
         }
         [Test]
-        public async Task Movie_Zero_Rating_Test()
+        public async Task Search_Series_By_Title_Test()
         {
-            var data = await _mediaService.GetAllMovies(false);
-            var movie = data.Find(x => x.Id == 4);
-            float rating = 0;
-            if (movie.Ratings.Select(x => x.Rating_value).Any())
-            {
-                rating = movie.Ratings.Select(x => x.Rating_value).Average();
-            }
-            Assert.AreEqual(0, rating);
+            var data = await _mediaService.GetAllMedia();
+
+            var result = await _mediaService.Search("Brooklyn");
+
+            Assert.AreEqual(1, result.Count());
         }
         [Test]
-        public async Task Movie_Valid_Rating_Test2()
+        public async Task Search_Movie_By_Description_Test()
         {
-            var data = await _mediaService.GetAllMovies(false);
-            var movie = data.Find(x => x.Id == 3);
-            Assert.IsTrue(movie.Ratings.Select(x => x.Rating_value).Average() >= 0 && movie.Ratings.Select(x => x.Rating_value).Average() <= 5);
+            var data = await _mediaService.GetAllMedia();
+
+            var result = await _mediaService.Search("Frodo");
+
+            Assert.AreEqual(1, result.Count());
+        }
+                
+        [Test]
+        public async Task Search_Series_By_Description_Test()
+        {
+            var data = await _mediaService.GetAllMedia();
+
+            var result = await _mediaService.Search("quirky team");
+
+            Assert.AreEqual(1, result.Count());
+
+        }
+
+                
+        [Test]
+        public async Task Search_Empty_String_Test()
+        {
+            var data = await _mediaService.GetAllMedia();
+
+            var result = await _mediaService.Search(" ");
+
+            Assert.AreEqual(5, result.Count());
         }
     }
 }
