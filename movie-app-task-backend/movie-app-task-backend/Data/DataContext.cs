@@ -20,6 +20,8 @@ namespace movie_app_task_backend.Data
         public DbSet<MostRatedMoviesReport> MostRatedMoviesReports { get; set; }
         public DbSet<MostScreenedMoviesReport> MoviesWithMostScreeningsReports { get; set; }
         public DbSet<MovieWithMostSoldTicketsReport> MoviesWithMostSoldTicketsReports { get; set; }
+        public DbSet<PurchasedTicket> PurchasedTickets { get; set; }
+
         public object MostScreenedMoviesReports { get; internal set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -1450,20 +1452,41 @@ namespace movie_app_task_backend.Data
                     new Screening { Id = 68, Date = System.DateTime.Now.AddDays(100), MediaId = 87, Number_of_seats = 100, Number_of_tickets = 100, Place = "Sarajevo", Time = "11:00" },
                     new Screening { Id = 69, Date = System.DateTime.Now.AddDays(100), MediaId = 87, Number_of_seats = 100, Number_of_tickets = 100, Place = "Sarajevo", Time = "11:00" }
                 );
+            modelBuilder.Entity<User>().HasData(
+                new User { Id = 1, Username = "user1", Password = "123456" },
+                new User { Id = 2, Username = "user2", Password = "123456" },
+                new User { Id = 3, Username = "user3", Password = "123456" },
+                new User { Id = 4, Username = "user4", Password = "123456" },
+                new User { Id = 5, Username = "user5", Password = "123456" }
+
+                );
+
+            modelBuilder.Entity<PurchasedTicket>().HasData(
+                    new PurchasedTicket { Id = 1, Price = 5.5F, ScreeningId = 1 , UserId = 1 },
+                    new PurchasedTicket { Id = 2, Price = 5.5F, ScreeningId = 25, UserId = 1 },
+                    new PurchasedTicket { Id = 3, Price = 5.5F, ScreeningId = 30, UserId = 1 },
+                    new PurchasedTicket { Id = 4, Price = 5.5F, ScreeningId = 35, UserId = 1 },
+                    new PurchasedTicket { Id = 5, Price = 5.5F, ScreeningId = 40, UserId = 1 },
+                    new PurchasedTicket { Id = 6, Price = 5.5F, ScreeningId = 45, UserId = 1 },
+                    new PurchasedTicket { Id = 7, Price = 5.5F, ScreeningId = 50, UserId = 1 },
+                    new PurchasedTicket { Id = 8, Price = 5.5F, ScreeningId = 55, UserId = 1 },
+                    new PurchasedTicket { Id = 9, Price = 5.5F, ScreeningId = 60, UserId = 1 },
+                    new PurchasedTicket { Id = 10, Price = 5.5F, ScreeningId = 65, UserId = 2 }
+                );
 
 
             modelBuilder.Entity<Ticket>().HasData(
-                    new Ticket { Id = 1, Price = 5.5F, ScreeningId = 1 },
-                    new Ticket { Id = 2, Price = 5.5F, ScreeningId = 25 },
-                    new Ticket { Id = 3, Price = 5.5F, ScreeningId = 30 },
-                    new Ticket { Id = 4, Price = 5.5F, ScreeningId = 35 },
-                    new Ticket { Id = 5, Price = 5.5F, ScreeningId = 40 },
-                    new Ticket { Id = 6, Price = 5.5F, ScreeningId = 45 },
-                    new Ticket { Id = 7, Price = 5.5F, ScreeningId = 50 },
-                    new Ticket { Id = 8, Price = 5.5F, ScreeningId = 55 },
-                    new Ticket { Id = 9, Price = 5.5F, ScreeningId = 60 },
-                    new Ticket { Id = 10, Price = 5.5F, ScreeningId = 65}
-                );
+        new Ticket { Id = 1, Price = 5.5F, ScreeningId = 1  },
+        new Ticket { Id = 2, Price = 5.5F, ScreeningId = 25 },
+        new Ticket { Id = 3, Price = 5.5F, ScreeningId = 30 },
+        new Ticket { Id = 4, Price = 5.5F, ScreeningId = 35 },
+        new Ticket { Id = 5, Price = 5.5F, ScreeningId = 40 },
+        new Ticket { Id = 6, Price = 5.5F, ScreeningId = 45 },
+        new Ticket { Id = 7, Price = 5.5F, ScreeningId = 50 },
+        new Ticket { Id = 8, Price = 5.5F, ScreeningId = 55 },
+        new Ticket { Id = 9, Price = 5.5F, ScreeningId = 60 },
+        new Ticket { Id = 10, Price = 5.5F,ScreeningId = 65 }
+    );
 
 
 

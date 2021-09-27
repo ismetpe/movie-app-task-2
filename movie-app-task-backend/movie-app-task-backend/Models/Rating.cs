@@ -12,5 +12,6 @@ namespace movie_app_task_backend.Models
 
         public int MediaId { get; set; }
       
+        public Media Media { get; set; }
     }
 }

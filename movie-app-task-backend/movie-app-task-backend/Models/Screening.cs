@@ -20,6 +20,8 @@ namespace movie_app_task_backend.Models
         public int Number_of_tickets { get; set; }
 
         public int MediaId { get; set; }
+        
+        public Media Media { get; set; }
 
     }
 }

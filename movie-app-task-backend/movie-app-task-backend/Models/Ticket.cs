@@ -8,6 +8,7 @@ namespace movie_app_task_backend.Models
 
         public int ScreeningId { get; set; }
 
-        public int UserId { get; set; }
+        public Screening Screening { get; set; }
+
     }
 }

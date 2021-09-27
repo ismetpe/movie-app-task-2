@@ -19,6 +19,7 @@ using movie_app_task_backend.Data;
 using movie_app_task_backend.Services.MediaService;
 using movie_app_task_backend.Services.RatingService;
 using movie_app_task_backend.Services.ReportService;
+using movie_app_task_backend.Services.ScreeningsService;
 using movie_app_task_backend.Services.UserService;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -55,6 +56,7 @@ namespace movie_app_task_backend
             services.AddScoped<IMediaService, MediaService>();
             services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<IScreeningsService, ScreeningsService>();
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<IAuthService, AuthService>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
